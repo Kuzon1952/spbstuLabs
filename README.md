@@ -7,7 +7,7 @@ firstSemester
 <br>
 Group: 5130201/40001,
 <br>
-Ovi Md Shamin Yasir,
+Name: Ovi Md Shamin Yasir,
 <br>
 Course started: 01.09.2024,
 <br>
