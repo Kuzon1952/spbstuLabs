@@ -1,5 +1,5 @@
 # spbstuLabs
-spbstu.ru
+https://english.spbstu.ru/
 <br>
 firstSemester
 <br>
