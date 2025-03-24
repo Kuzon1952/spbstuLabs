@@ -16,7 +16,7 @@ TextWrapper::TextWrapper(const MyString& input, int maxLineLength){
 
 TextWrapper::~TextWrapper(){
     if (wrappedLines) {
-        for (int i = 0; i < lineCount; ++i)
+        for (int i = 0; i <lineCount; ++i)
             delete[] wrappedLines[i];
         delete[] wrappedLines;
     }

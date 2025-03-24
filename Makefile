@@ -16,6 +16,8 @@ build/lab1.o: src/lab1.cpp
 build/matrix.o: src/matrix.cpp
 	$(CXX) $(CXXFLAGS) -c src/matrix.cpp -o build/matrix.o
 
+src/rect.cpp: src/rech.hpp
+
 build/rect.o: src/rect.cpp
 	$(CXX) $(CXXFLAGS) -c src/rect.cpp -o build/rect.o
 
@@ -24,6 +26,9 @@ build/barrel.o: src/barrel.cpp
 
 build/mystring.o: src/mystring.cpp
 	$(CXX) $(CXXFLAGS) -c src/mystring.cpp -o build/mystring.o
+
+src/TextWrapper.cpp: src/TextWrapper.hpp
+src/TextWrapper.hpp: src/mystring.hpp
 
 build/TextWrapper.o: src/TextWrapper.cpp
 	$(CXX) $(CXXFLAGS) -c src/TextWrapper.cpp -o build/TextWrapper.o

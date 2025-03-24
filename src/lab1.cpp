@@ -68,6 +68,17 @@
 
 using namespace std;
 
+class C {
+    MyString s;
+    Rect c;
+};
+
+void foo() {
+    C c;
+    // what will the implicit default constructor do in this case?
+    // TODO: check, if the fields of C will be initialized
+}
+
 int main()
 {
     /**
@@ -456,6 +467,8 @@ int main()
      */
 
     {
+        // TODO: see (with debugger or couts), which constructor are called and document it here
+        // and explain why
         Rect r1(1,4,5,2), r2(3,6,7,1);
         Rect r3 = bounding_rect(r1, r2);
         print_rect(r3);

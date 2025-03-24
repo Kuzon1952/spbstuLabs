@@ -4,7 +4,17 @@
 
 using namespace std;
 
+void bar() {
+    for (int i = 0; i < 100; ++i) {
+        MyString s; // allocates 1 byte
+        s.read_line(); // frees this 1 byte
+        // do something with the string
+    }
+}
+
 MyString::MyString(){//default constructor
+    // TODO: use nullptr for indicating that string is empty
+
     str = new char[1];//1 byte for null 
     str[0]='\0';//empty string
 }
@@ -21,6 +31,9 @@ MyString::MyString(const char* input_str){//parameterized constructor
 }
 
 MyString::MyString(const MyString& other){//copy constructor
+
+    // TODO: handle possible nullptr in other
+
     str = new char[strlen(other.str) + 1];//memory for string
     strcpy(str, other.str);//copy the string from the other obj
 }

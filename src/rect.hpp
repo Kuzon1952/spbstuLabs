@@ -3,6 +3,8 @@
 #ifndef RECT_HPP
 #define RECT_HPP
 
+// 
+
 class Rect{
     private:
     //old valriables:
@@ -13,6 +15,10 @@ class Rect{
     int right;//right X-axis which is x_max
     int top;//top Y-axis which is y_max
     int bottom;//bottom Y'-axis which is y_min
+
+    // TODO: migrate from (left, right, top, bottom) to (x, y, width, height) model
+    // without changing anything public in rect and anything outside rect (e.g. your tests)
+    // tests must still pass without changing them
 
     public:
     Rect();//default constructor
