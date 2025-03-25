@@ -46,11 +46,6 @@ void Rect::setRight(int r) { right = r; }
 void Rect::setTop(int t) { top = t; }
 void Rect::setBottom(int b) { bottom = b; }
 
-//getter methods
-int Rect::get_left() const { return left; }
-int Rect::get_right() const { return right; }
-int Rect::get_top() const { return top; }
-int Rect::get_bottom() const { return bottom; }
 
 //setter methods for all
 void Rect::set_all(int l, int r, int t, int b){
