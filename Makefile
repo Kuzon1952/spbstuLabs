@@ -13,24 +13,24 @@ build/debug.out: $(OBJS)
 build/lab1.o: src/lab1.cpp
 	$(CXX) $(CXXFLAGS) -c src/lab1.cpp -o build/lab1.o
 
-build/matrix.o: src/matrix.cpp
+build/matrix.o: src/matrix.cpp src/matrix.hpp
 	$(CXX) $(CXXFLAGS) -c src/matrix.cpp -o build/matrix.o
 
-src/rect.cpp: src/rech.hpp
+#1.todo: src/rect.cpp: src/rect.hpp
 
-build/rect.o: src/rect.cpp
+build/rect.o: src/rect.cpp src/rect.hpp 
 	$(CXX) $(CXXFLAGS) -c src/rect.cpp -o build/rect.o
 
-build/barrel.o: src/barrel.cpp
+build/barrel.o: src/barrel.cpp src/barrel.hpp
 	$(CXX) $(CXXFLAGS) -c src/barrel.cpp -o build/barrel.o
 
-build/mystring.o: src/mystring.cpp
+build/mystring.o: src/mystring.cpp src/mystring.hpp
 	$(CXX) $(CXXFLAGS) -c src/mystring.cpp -o build/mystring.o
 
-src/TextWrapper.cpp: src/TextWrapper.hpp
-src/TextWrapper.hpp: src/mystring.hpp
+#2.todo: src/TextWrapper.cpp: src/TextWrapper.hpp
+#3.todo: src/TextWrapper.hpp: src/mystring.hpp
 
-build/TextWrapper.o: src/TextWrapper.cpp
+build/TextWrapper.o: src/TextWrapper.cpp src/TextWrapper.hpp src/mystring.hpp
 	$(CXX) $(CXXFLAGS) -c src/TextWrapper.cpp -o build/TextWrapper.o
 
 #memory Leak Detection Build
@@ -75,3 +75,5 @@ test: build/test_rect_basic_methods.out build/test_rect_properties.out build/tes
 .PHONY: clean test
 clean:
 	rm -rf build/*
+
+

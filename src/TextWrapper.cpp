@@ -97,7 +97,6 @@ void TextWrapper::printWrapped(){
     cout << " ";
     for(int i = 0; i < bubbleWidth + 2; ++i)cout << "_";
     cout << endl;
-
     cout << "     \\" << endl;
     cout << "      \\" << endl;
     cout << "        /\\_/\\  (" << endl;
