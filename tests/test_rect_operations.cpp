@@ -5,6 +5,8 @@ int main() {
     Rect r(1, 3, 6, 2);
 
     r.move(2, 2);//shift by(2, 2)
+
+    
     assert(r.get_left() == 3);
     assert(r.get_right() == 5);
     assert(r.get_top() == 8);

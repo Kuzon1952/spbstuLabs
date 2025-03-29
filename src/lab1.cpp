@@ -68,6 +68,20 @@
 
 using namespace std;
 
+class C {
+    MyString s;
+    Rect c;
+};
+
+void foo() {
+    C c;
+    // what will the implicit default constructor do in this case?
+    //the implicit default constructor of C will initialize its fields s and c because the compiler will automatically provides an implicit default constructor
+    //C::C():s(),c(){} so, calling the default constructor of MyString and Rect to initialize s and c
+    // TODO: check, if the fields of C will be initialized
+    //yeah, the fields will be initialized because they are objs not raw data types
+}
+
 int main()
 {
     /**
@@ -307,7 +321,7 @@ int main()
      *
      * Продемонстрируйте работу этих методов ниже.
      * 
-     * /**
+     * *
 
      *
      * The principles of object-oriented programming prescribe
@@ -427,7 +441,6 @@ int main()
 
         //moving the rectangle
         rect.move(3,2);
-        rect.move(5);//move only in x direction by 5
 
         cout<<"final rectangle coordinates:\nLeft:"<<rect.getLeft()<<", Right: "<<rect.getRight()<<", Top: "<<rect.getTop()<<", Bottom: "<<rect.get_bottom()<<endl;
 
@@ -453,11 +466,17 @@ int main()
      * rectangle on the console.
      *
      * Which constructors are called when executing the code in the next block?
+     * for r1 and r2 :parameterized constructor is called
+     * for r3 also parameterized consturctor called to create the new Rect 
+     * and then the return val of bounding_rect is assigned to r3, 
+     * the copy constructor of Rect is called because assigning one obj to another
      */
 
     {
-        Rect r1(1,4,5,2), r2(3,6,7,1);
-        Rect r3 = bounding_rect(r1, r2);
+        // TODO: see (with debugger or couts), which constructor are called and document it here
+        // and explain why
+        Rect r1(1,4,5,2), r2(3,6,7,1);//parameterized constructor called for both r1,r2
+        Rect r3 = bounding_rect(r1, r2);//copy constructor is called because bounding_rect creates a new Rect, calling the parameterized cconstructor and result assigned to r3
         print_rect(r3);
     }
 

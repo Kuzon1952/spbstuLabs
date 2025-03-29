@@ -5,25 +5,32 @@
 
 using namespace std;
 
-Rect::Rect(): left(0),right(0),top(0),bottom(0){//default constructor explicitly initializing
+Rect::Rect() : x(0), y(0), width(0), height(0){//default constructor explicitly initializing
     //cout<<"explicit constructor called "<<this<<endl;
     
 };
+	// TODO: migrate from (left, right, top, bottom) to (x, y, width, height) model
+    // without changing anything public in rect and anything outside rect (e.g. your tests)
+    // tests must still pass without changing them
 
 Rect::Rect (int l, int r, int t, int b) {//constructor with parameters
     //cout<<"parameterized constructor called "<<this<<endl;
-    this->left=l;
-    this->right=r;
-    this->top=t;
-    this->bottom=b;
+    x = l;//this->left=l;
+    y = b; //this->right=r;
+    width = r -l;//this->top=t;
+    height = t -b;//this->bottom=b;
 };
 
 Rect::Rect(const Rect& other){//copy constructor
     //cout<<"copy constructor called "<<this<<endl;
-    left = other.left;
-    right = other.right;
-    top = other.top;
-    bottom = other.bottom;
+    //left = other.left;
+    //right = other.right;
+    //top = other.top;
+    //bottom = other.bottom;
+    x = other.x;
+    y = other.y;
+    width = other.width;
+    height = other.height;
     
 };
 
@@ -35,54 +42,71 @@ Rect::~Rect(){//default destructor
 
 
 //getter methods
-int Rect::getLeft() const {return left;}
-int Rect::getRight() const { return right; }
-int Rect::getTop() const { return top; }
-int Rect::getBottom() const { return bottom; }
-
-//setter methods
-void Rect::setLeft(int l) {left = l;}
-void Rect::setRight(int r) { right = r; }
-void Rect::setTop(int t) { top = t; }
-void Rect::setBottom(int b) { bottom = b; }
+int Rect::getLeft() const {return x;}//{return left;}
+int Rect::getRight() const {return x + width;}//{ return right; }
+int Rect::getTop() const {return y + height;}//{ return top; }
+int Rect::getBottom() const {return y;}//{ return bottom; }
 
 //getter methods
-int Rect::get_left() const { return left; }
-int Rect::get_right() const { return right; }
-int Rect::get_top() const { return top; }
-int Rect::get_bottom() const { return bottom; }
+int Rect::get_left() const { return getLeft(); }//left
+int Rect::get_right() const { return getRight(); }//right
+int Rect::get_top() const { return getTop(); }//top
+int Rect::get_bottom() const { return getBottom(); }//bottom
+
+// Setters
+void Rect::setLeft(int l) {
+    int right = getRight();
+    x = l;
+    width = right - x;
+}
+
+void Rect::setRight(int r) {
+    width = r - x;
+}
+
+void Rect::setTop(int t) {
+    height = t - y;
+}
+
+void Rect::setBottom(int b) {
+    int top = getTop();
+    y = b;
+    height = top - y;
+}
+
 
 //setter methods for all
 void Rect::set_all(int l, int r, int t, int b){
-    left=l;
-    right=r;
-    top=t;
-    bottom=b;
+    
+    x = l;//left=l;
+    y = b;//right=r;
+    width = r - l;//top=t;
+    height = t - b;//bottom=b;
    // cout<<"values updated thorugh setAll() "<<endl;
 }
 
 //overloading
 void Rect::inflate(int amount){
-    left -= amount;
-    right += amount;
-    top += amount;
-    bottom -= amount;
+    x -= amount;//left -= amount;
+    y -= amount;//right += amount;
+    width += 2 * amount;//top += amount;
+    height += 2 * amount;//bottom -= amount;
     cout<<"rectangle inflated uniformly by "<<amount<<endl;
 }
 
 void Rect::inflate(int dw, int dh){
-    left -= dw;
-    right += dw;
-    top += dh;
-    bottom -= dh;
+    x -= dw;//left -= dw;
+    y -= dh;//right += dw;
+    width += 2 * dw;//top += dh;
+    height += 2 * dh;//bottom -= dh;
     cout<<"rectangle inflated by ("<<dw<<", "<<dh<<")"<<endl;
 }
 
 void Rect::inflate(int d_left, int d_right, int d_top, int d_bottom){
-    left -= d_left;
-    right += d_right;
-    top += d_top;
-    bottom -= d_bottom;
+    x -= d_left;//left -= d_left;
+    y -= d_bottom;//right += d_right;
+    width += d_left + d_right;//top += d_top;
+    height += d_top + d_bottom;//bottom -= d_bottom;
     cout<<"rectangle inflated by left: "<<d_left
         <<", right: "<<d_right
         <<", top: "<<d_top
@@ -90,10 +114,12 @@ void Rect::inflate(int d_left, int d_right, int d_top, int d_bottom){
 }
 
 void Rect::move(int dx, int dy){//move method with default vals
-    left += dx;
-    right += dx;
-    top += dy;
-    bottom += dy;
+    x += dx;
+    y += dy;
+    //left += dx;
+    //right += dx;
+    //top += dy;
+    //bottom += dy;
     cout<<"rectangle moved by ("<<dx <<", "<<dy<<")"<<endl;
 }
 
@@ -117,20 +143,20 @@ void print_rect(const Rect &r){
 }
 
 int Rect::get_width() const{
-    return right - left;
+    return width;//right - left;
 }
 
 int Rect::get_height() const{
-    return top - bottom;
+    return height;//top - bottom;
 }
 
 int Rect::get_square() const{
-    return get_width() * get_height();
+    return width*height; //get_width() * get_height();
 }
 
 void Rect::set_width(int new_width){
     if(new_width>0){
-        right = left + new_width;
+        width = new_width;//right = left + new_width;
         cout<<"width updated to "<<new_width<<endl;
     }
     else{
@@ -140,7 +166,7 @@ void Rect::set_width(int new_width){
 
 void Rect::set_heigth(int new_height){
     if(new_height>0){
-        top = bottom + new_height;
+        height = new_height;//top = bottom + new_height;
         cout<<"height updated to "<<new_height<<endl;
     }
     else{

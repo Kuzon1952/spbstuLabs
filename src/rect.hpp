@@ -9,10 +9,10 @@ class Rect{
     //int left, right, top, bottom;
 
     //new variables:
-    int left;//left X'-axis which is x_min
-    int right;//right X-axis which is x_max
-    int top;//top Y-axis which is y_max
-    int bottom;//bottom Y'-axis which is y_min
+    int x;//int left;//left X'-axis which is x_min
+    int y;//int right;//right X-axis which is x_max
+    int width;//int top;//top Y-axis which is y_max
+    int height;//int bottom;//bottom Y'-axis which is y_min
 
     public:
     Rect();//default constructor
@@ -40,7 +40,7 @@ class Rect{
 
     void set_all(int l, int r, int t, int b);//setter for all 
 
-    void move(int dx, int dy =0);
+    void move(int dx, int dy);
 
     //getter methods for properties
     int get_width() const;
