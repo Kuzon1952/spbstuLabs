@@ -1,42 +1,89 @@
+
 #include "rlefile.hpp"
+#include <iostream>
 
-void RleFile::write(const void* buf, size_t n_bytes) {
-    if (!file_ptr || !buf) return;//file is not open or buffer is null stop.
+size_t RleFile::write(const void* buf, size_t n_bytes) {
+    if (!file_ptr || !buf) return 0;//return 0 if file is not open or buffer is null
 
-    const unsigned char* data = static_cast<const unsigned char*>(buf);//cast to byte arr
-    size_t i = 0;//start idx
+    const unsigned char* data = static_cast<const unsigned char*>(buf);//cast to byte array
+    size_t i = 0;  
+    size_t total_bytes_written = 0; 
 
-    while (i < n_bytes) {//loop untill end of data
-        unsigned char ch = data[i];//current char
-        unsigned char count = 1;//initialize repeat count to 1
+    while (i < n_bytes) {  
+        unsigned char ch = data[i];  
+        unsigned char count = 1;  
 
-        while (i + count < n_bytes && data[i + count] == ch && count < 255) {//how many times the char is repeated
-            count++;//increase 
+        //count the number of consecutive repeated characters
+        while (i + count < n_bytes && data[i + count] == ch && count < 255) {
+            count++;  
         }
 
-        unsigned char pair[2] = { count, ch };
-        fwrite(pair, 1, 2, file_ptr);//write 2bytes: count and char
+        unsigned char pair[2] = { count, ch };//pair: count and char
+        size_t bytes_written = fwrite(pair, 1, 2, file_ptr);  
+        if (bytes_written < 2) {
+            std::cerr << "Error writing to file" << std::endl;
+            return total_bytes_written;  
+        }
+        total_bytes_written += bytes_written; //add the number of bytes written
 
-        i += count;//moving forward 
+        i += count; 
     }
+
+    return total_bytes_written;  
 }
+size_t RleFile::read(void* buf, size_t max_bytes) {
+    if (!file_ptr || !buf) return 0;  
 
-void RleFile::read(void* buf, size_t max_bytes) {
-    if (!file_ptr || !buf) return;//file is not open or buffer is null stop.
+    unsigned char* out = static_cast<unsigned char*>(buf);  
+    size_t pos = 0; 
+    size_t total_bytes_read = 0;  
+    static unsigned char leftover_buffer[256];//buffer to hold leftover data from previous read
+    static size_t leftover_count = 0;//tracks how much data is in leftover_buffer
 
-    unsigned char* out = static_cast<unsigned char*>(buf);//cast to byte arr
-    size_t pos = 0;//current position
+    //ff there's leftover data, process it first
+    if (leftover_count > 0) {
+        size_t bytes_to_copy = std::min(leftover_count, max_bytes);
+        std::memcpy(out, leftover_buffer, bytes_to_copy);
+        pos += bytes_to_copy;
+        total_bytes_read += bytes_to_copy;
 
-    while (pos < max_bytes) {//loop untill end of data
-        unsigned char pair[2];//temp for count and char
-        if (fread(pair, 1, 2, file_ptr) < 2) break;//stop if less than 2 bytes
+        //move leftover data
+        leftover_count -= bytes_to_copy;
+        std::memmove(leftover_buffer, leftover_buffer + bytes_to_copy, leftover_count);
+    }
 
-        for (int j = 0; j < pair[0] && pos < max_bytes; ++j) {
-            out[pos++] = pair[1];//fill buffer with repeated chars
+    
+    while (pos < max_bytes) {
+        unsigned char pair[2];  
+        if (fread(pair, 1, 2, file_ptr) < 2) break;//stop if less than 2 bytes are read
+
+        //if there’s more data than can fit in the buffer, save the leftovers
+        if (pair[0] + pos > max_bytes) {
+            size_t remaining_space = max_bytes - pos;
+            size_t leftover_size = pair[0] - remaining_space;
+            leftover_count = leftover_size;
+            std::memcpy(leftover_buffer, pair + 1 + remaining_space, leftover_count);//save the leftover characters
+
+            //copy as much data as will fit into the buffer
+            for (size_t j = 0; j < remaining_space; ++j) {
+                out[pos++] = pair[1];
+                total_bytes_read++;
+            }
+        } else {
+            //otherwise, fit all the data in the current buffer
+            for (int j = 0; j < pair[0]; ++j) {
+                out[pos++] = pair[1];
+                total_bytes_read++;
+            }
         }
     }
+
+    return total_bytes_read; 
 }
+
 
 RleFile::~RleFile() {
-    cout<<"destructor called from RleFile"<<endl;
+    
+    std::cout << "destructor called for RleFile" << std::endl;
+    
 }

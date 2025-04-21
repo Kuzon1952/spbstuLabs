@@ -8,6 +8,11 @@ Base32File2::~Base32File2() {
     delete inner;
 }
 
+
+int Base32File2::decoded32_size(int encoded_size) {
+    return (encoded_size * 5) / 8;
+}
+
 bool Base32File2::can_read() const {
     return inner->can_read();
 }
@@ -79,17 +84,73 @@ int Base32File2::decode32(const char* encoded_data, int encoded_size, char* dst)
     return 0;
 }
 
-void Base32File2::write(const void* buf, size_t n_bytes) {
-    char encoded[256];
-    encode32(static_cast<const char*>(buf), n_bytes, encoded);
-    inner->write(encoded, strlen(encoded));
+size_t Base32File2::write(const void* buf, size_t n_bytes) {
+    size_t chunk_size = 256;//process data in 256-byte chunks
+    const char* data = static_cast<const char*>(buf);
+    size_t total_bytes_written = 0;
+
+    while (n_bytes > 0) {
+        size_t current_chunk_size = (n_bytes < chunk_size) ? n_bytes : chunk_size;
+        
+        //temporary buffer to store the encoded data
+        char encoded_data[encoded32_size(current_chunk_size) + 1];  
+        encode32(data, current_chunk_size, encoded_data);
+        
+        //writing the encoded chunk to the inner file
+        size_t bytes_written = inner->write(encoded_data, strlen(encoded_data));
+        
+        total_bytes_written += bytes_written;
+        
+        //movig to the next chunk of data
+        data += current_chunk_size;
+        n_bytes -= current_chunk_size;
+    }
+
+    return total_bytes_written; 
 }
 
-void Base32File2::read(void* buf, size_t max_bytes) {
-    char encoded[256];
-    inner->read(encoded, sizeof(encoded));
+size_t Base32File2::read(void* buf, size_t max_bytes) {
+    size_t chunk_size = 256;//process data in 256-byte chunks
+    char buffer[chunk_size];  
+    size_t total_bytes_read = 0;
 
-    char decoded[256];
-    decode32(encoded, strlen(encoded), decoded);
-    strncpy(static_cast<char*>(buf), decoded, max_bytes);
+    while (total_bytes_read < max_bytes) {
+        
+        size_t bytes_read = inner->read(buffer, chunk_size);//use read() here
+        
+        if (bytes_read == 0) {
+            break;//noo more data to read, stop if EOF is reached
+        }
+
+        //decoding the chunk
+        size_t decoded_size = decoded32_size(bytes_read);//calculating the decoding size
+        char* decoded_data = new char[decoded_size + 1];  
+        int result = decode32(buffer, bytes_read, decoded_data);
+        if (result != 0) {
+            std::cout << "Error during Base32 decoding!" << std::endl;
+            delete[] decoded_data; 
+            return 0;//return 0 if decoding fails
+        }
+
+       
+        size_t bytes_to_copy = std::min(decoded_size, max_bytes - total_bytes_read);
+
+        //copy the decoded data to the destination buffer
+        memcpy(static_cast<char*>(buf) + total_bytes_read, decoded_data, bytes_to_copy);
+        total_bytes_read += bytes_to_copy;
+
+        //if not space
+        if (total_bytes_read >= max_bytes) {
+            break;
+        }
+
+        
+        delete[] decoded_data;
+    }
+
+    //after the read process
+    static_cast<char*>(buf)[total_bytes_read] = '\0';
+
+   
+    return total_bytes_read;
 }

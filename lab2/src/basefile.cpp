@@ -5,14 +5,18 @@ BaseFile::BaseFile():file_ptr(nullptr) {
     cout<<"default constructor called from Basefile"<<endl;
 }
 
-BaseFile::BaseFile(const char* path, const char* mode) {
-    //constructor with file path and mode
+BaseFile::BaseFile(const char* path, const char* mode) : mode(mode) {
+    
     file_ptr = fopen(path, mode);
+    
     if (file_ptr == nullptr) {
-        cout << "error opening file: " << path << endl;
+        std::cerr << "error opening file: " << path << std::endl;
+        return;  
     }
-    cout<<"constructor with file path and mode called from Basefile"<<endl;
+
+    std::cout << "constructor with file path and mode called from BaseFile" << std::endl;
 }
+
 
 BaseFile::BaseFile(FILE* existing_file_ptr):file_ptr(existing_file_ptr) {
     //pointer constructor
@@ -40,12 +44,15 @@ bool BaseFile::can_read() const {
         cout << "error: file not open" << endl;
         return false;
     }   
-    return true;
+    return mode && (mode[0] == 'r' || mode[0] == 'a' || mode[0] == '+');
 }
 
 bool BaseFile::can_write() const {
-    //checking if the file can be written to
-    return file_ptr != nullptr;
+    if (file_ptr == nullptr) {
+        cout << "error: file not open" << endl;
+        return false;
+    }
+    return mode && (mode[0] == 'w' || mode[0] == 'a' || mode[0] == '+');
 }
 
 size_t BaseFile::write_raw(const void* buf, size_t n_bytes) {
@@ -88,14 +95,14 @@ bool BaseFile::seek(long offset) {
     return fseek(file_ptr, offset, SEEK_SET) == 0;
 }
 
-void BaseFile::write(const void* buf, size_t n_bytes) {
+size_t BaseFile::write(const void* buf, size_t n_bytes) {
     //writing data to the file
-    write_raw(buf, n_bytes);
+    return write_raw(buf, n_bytes);
 }
 
-void BaseFile::read(void* buf, size_t max_bytes) {
+size_t BaseFile::read(void* buf, size_t max_bytes) {
     //reading data from the file
-    read_raw(buf, max_bytes);
+    return read_raw(buf, max_bytes);
 }
 
 void BaseFile::close() {

@@ -8,13 +8,13 @@ private:
     iFile* inner;
 
 public:
-    explicit RleFile2(iFile* f);   // takes ownership of inner
+    explicit RleFile2(iFile* f);//takes ownership of inner
     ~RleFile2();
 
     bool can_read() const override;
     bool can_write() const override;
-    void write(const void* buf, size_t n_bytes) override;
-    void read(void* buf, size_t max_bytes) override;
+    size_t write(const void* buf, size_t n_bytes) override;
+    size_t read(void* buf, size_t max_bytes) override;
 };
 
 #endif

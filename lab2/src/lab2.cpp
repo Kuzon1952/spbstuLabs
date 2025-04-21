@@ -58,9 +58,59 @@ void write_int(iFile& file, int x) {
      file.write(&x, sizeof(x));
  }
 
+ void foo(RleFile2 &file) {
+     char buf[64];
+ 
+     if (!file.can_read()) {
+         std::cerr << "Error: File is not open or cannot be read." << std::endl;
+         return;//exit if not open
+     }
+ 
+     //read the first 64 bytes
+     size_t bytes_read = file.read(buf, sizeof(buf));
+     std::cout << "processing first 64 bytes: ";
+     for (size_t i = 0; i < bytes_read; ++i) {
+         std::cout << buf[i];
+     }
+ 
+     //reading the next 64 bytes (continuing from the previous leftover data if necessary)
+     bytes_read = file.read(buf, sizeof(buf));
+     std::cout << "\nProcessing the rest: ";
+     for (size_t i = 0; i < bytes_read; ++i) {
+         std::cout << buf[i];//process the rest of the data
+     }
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+
+
  
 
 int main() {
+     {
+          {
+
+               iFile* innerFile = new RleFile("./data/data.txt", "r"); 
+               if (!innerFile) {
+                   std::cerr << "failed to open file!" << std::endl;
+                   return 1; 
+               }
+           
+               RleFile2 file(innerFile);//wrap 
+           
+               //call foo to process the file content
+               foo(file);
+           
+               delete innerFile;  // clean up the inner file object
+           
+               
+           }
+     }
+ 
     /**
      * Задание 1. Массивы объектов класса. Arrays of objects of the class.
      */
@@ -210,13 +260,16 @@ int main() {
     {
           cout<<"\ntask: 2.1"<<endl;
          
-          BaseFile file("test.txt", "w");//creating a BaseFile object and open a file for writing
+          BaseFile file("data/task2.1.txt", "w");//creating a BaseFile object and open a file for writing
           
           if(file.is_open()){//checking the file is open or not
               
                const char* message = "i am writing a message...and everything is ok\n";//printing to the console
-               
-               file.write_raw(message, strlen(message));
+
+               size_t bytesWritten = file.write_raw(message, strlen(message));
+               if (bytesWritten != strlen(message)) {
+                    cout<<"error: not all bytes were written to the file."<<endl;
+               }
                
                file.close();
           }
@@ -226,13 +279,16 @@ int main() {
                cout<<"file not open for writing"<<endl;
           }
           
-          BaseFile readFile("data/test.txt", "r");//creating a BaseFile obj and open a file for reading
+          BaseFile readFile("data/task2.1.txt", "r");//creating a BaseFile obj and open a file for reading
           
           if(readFile.is_open()){//checking the file is open or not
                
                char buffer[100];
                
                size_t bytesRead = readFile.read_raw(buffer, sizeof(buffer) - 1);//1 to 99 and last one for '\0'
+               if (bytesRead == 0) {
+                    cout << "error: no data" << endl;
+                }
                
                buffer[bytesRead] = '\0';
                
@@ -321,44 +377,46 @@ encode and decode data using the algorithm that you use when writing
      * encodings, the default table is "A..Z1..6".
      */
     {
-          const char* message = "closing time, every new beginning comes from some other beginning's end....";//message to encode and save
-          int raw_size = strlen(message);//size of the message
-          cout<<"original message: " << message << endl;//
-     
-          Base32File b32f("data/base32_test.txt", "w");//creating an obj of Base32File to write data to file
+     const char* message = "closing time, every new beginning comes from some other beginning's end....";//message to encode and save
+    
+     cout<<"original message: " << message << endl;//
+
+     Base32File b32f("data/base32_test.txt", "w");//creating an obj of Base32File to write data to file
+
+     //encode and write to file
+     b32f.write(message, strlen(message));
+     b32f.close();
+     cout<<"encoded and written to file: " << message << endl;
+
+     //display the encoded message
+     ifstream file("data/base32_test.txt");
+     if(file.is_open()){
+          string encoded_data;
+          getline(file, encoded_data);
+          file.close();
+          cout<<"encoded data: " << encoded_data << endl;
+     }
+     else{
+          cout<<"error opening file"<<endl;
+     }
+
+     //decode and read from file
+     Base32File b32f_read("data/base32_test.txt", "r");     
+     char buffer[100];
+     b32f_read.read(buffer, sizeof(buffer) - 1);
+     b32f_read.close();
+     cout<<"decoded data: " << buffer << endl;
+
+     //check
+     if(strcmp(message,buffer) == 0){
+          cout<<"data is same"<<endl;
+     }
+     else{
+          cout<<"data is not same"<<endl;
+     }
+}
  
-          //encode and write to file
-          b32f.write(message, strlen(message));
-          b32f.close();
-          cout<<"encoded and written to file: " << message << endl;
-
-          //display the encoded message
-          ifstream file("data/base32_test.txt");
-          if(file.is_open()){
-               string encoded_data;
-               getline(file, encoded_data);
-               file.close();
-               cout<<"encoded data: " << encoded_data << endl;
-          }
-          else{
-               cout<<"error opening file"<<endl;
-          }
-
-          //decode and read from file
-          Base32File b32f_read("data/base32_test.txt", "r");     
-          char buffer[100];
-          b32f_read.read(buffer, sizeof(buffer) - 1);
-          b32f_read.close();
-          cout<<"decoded data: " << buffer << endl;
-
-          //check
-          if(strcmp(message,buffer) == 0){
-               cout<<"data is same"<<endl;
-          }
-          else{
-               cout<<"data is not same"<<endl;
-          }
- }
+ 
 
     /**
      * Задание 2.2.2. RLE-сжатие.

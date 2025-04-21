@@ -20,8 +20,8 @@ private:
 public:
     Base32File(const char* path, const char* mode, const char* table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456");
 
-    void write(const void* buf, size_t n_bytes) override;
-    void read(void* buf, size_t max_bytes) override;
+    size_t write(const void* buf, size_t n_bytes) override;
+    size_t  read(void* buf, size_t max_bytes) override;
 
     ~Base32File() override;
 };
