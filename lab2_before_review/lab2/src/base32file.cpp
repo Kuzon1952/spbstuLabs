@@ -86,30 +86,21 @@ int Base32File::decode32(const char* encoded_data, int encoded_size, char* dst) 
 }
 
 
-size_t Base32File::write(const void* buf, size_t n_bytes) {
+void Base32File::write(const void* buf, size_t n_bytes) {//override write method
     char encoded_data[encoded32_size(n_bytes) + 1];
     encode32(static_cast<const char*>(buf), n_bytes, encoded_data);
-    size_t bytes_written = BaseFile::write(encoded_data, encoded32_size(n_bytes));
 
-    return bytes_written;
+    BaseFile::write(encoded_data, strlen(encoded_data));
 }
 
-size_t Base32File::read(void* buf, size_t max_bytes) {
-    //temp buf
-    char buffer[256];
-    size_t bytes_read = BaseFile::read(buffer, sizeof(buffer) - 1);  
 
-    if (bytes_read == 0) {
-        return 0;  // eof or error
-    }
+void Base32File::read(void* buf, size_t max_bytes) {//override read method
+    char buffer[100];
+    size_t bytesRead = BaseFile::read_raw(buffer, sizeof(buffer) - 1);
+    buffer[bytesRead] = '\0';
 
-    //decode 
-    char decoded_data[decoded32_size(bytes_read) + 1];
-    decode32(buffer, bytes_read, decoded_data);
+    char decoded_data[100];
+    decode32(buffer, bytesRead, decoded_data);
 
-    //copy the decoded data to the provided buffer, making sure we don't exceed max_bytes
-    size_t bytes_to_copy = std::min(static_cast<size_t>(decoded32_size(bytes_read)), max_bytes);
-    strncpy(static_cast<char*>(buf), decoded_data, bytes_to_copy);
-
-    return bytes_to_copy;  
+    strncpy(static_cast<char*>(buf), decoded_data, max_bytes);
 }
