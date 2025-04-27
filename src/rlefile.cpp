@@ -2,6 +2,12 @@
 #include "rlefile.hpp"
 #include <iostream>
 
+RleFile::RleFile(const char* path, const char* mode) 
+    : BaseFile(path, mode), leftover_count(0) {
+    // Initialize leftover buffer to zeros
+    memset(leftover_buffer, 0, sizeof(leftover_buffer));
+}
+
 size_t RleFile::write(const void* buf, size_t n_bytes) {
     if (!file_ptr || !buf) return 0;//return 0 if file is not open or buffer is null
 
@@ -21,7 +27,7 @@ size_t RleFile::write(const void* buf, size_t n_bytes) {
         unsigned char pair[2] = { count, ch };//pair: count and char
         size_t bytes_written = fwrite(pair, 1, 2, file_ptr);  
         if (bytes_written < 2) {
-            std::cerr << "Error writing to file" << std::endl;
+            std::cerr << "error writing to file" << std::endl;
             return total_bytes_written;  
         }
         total_bytes_written += bytes_written; //add the number of bytes written
@@ -37,8 +43,7 @@ size_t RleFile::read(void* buf, size_t max_bytes) {
     unsigned char* out = static_cast<unsigned char*>(buf);  
     size_t pos = 0; 
     size_t total_bytes_read = 0;  
-    static unsigned char leftover_buffer[256];//buffer to hold leftover data from previous read
-    static size_t leftover_count = 0;//tracks how much data is in leftover_buffer
+   
 
     //ff there's leftover data, process it first
     if (leftover_count > 0) {
