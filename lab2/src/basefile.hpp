@@ -13,7 +13,6 @@ using namespace std;
 class BaseFile : public iFile {
     protected:
         FILE* file_ptr;//pointer to the file
-        const char* mode;
     
     public:
         BaseFile();//default constructor
@@ -30,8 +29,8 @@ class BaseFile : public iFile {
         long tell() const;//getting current file position
         bool seek(long offset);//setting file position
 
-        virtual size_t write(const void* buf, size_t n_bytes);//writing data to the file
-        virtual size_t read(void* buf, size_t max_bytes);//reading data from the file
+        virtual void write(const void* buf, size_t n_bytes);//writing data to the file
+        virtual void read(void* buf, size_t max_bytes);//reading data from the file
         void close();//closing the file
         
 };
