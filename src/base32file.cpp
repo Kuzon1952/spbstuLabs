@@ -86,6 +86,11 @@ int Base32File::decode32(const char* encoded_data, int encoded_size, char* dst) 
 }
 
 
+
+
+
+
+
 size_t Base32File::write(const void* buf, size_t n_bytes) {
     char encoded_data[encoded32_size(n_bytes) + 1];
     encode32(static_cast<const char*>(buf), n_bytes, encoded_data);
