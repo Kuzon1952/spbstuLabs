@@ -1,0 +1,12 @@
+# Ignore IDE config folders
+.idea/
+.vscode/
+
+# Ignore other unwanted files
+*.log
+*.bak
+*.swp
+
+# Keep the build and data files
+!build/
+!data/
