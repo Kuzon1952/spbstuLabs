@@ -27,6 +27,12 @@ double Circle::area() const {
     return PI * m_radius * m_radius;
 }
 
+void Circle::printPretty(std::ostream& os) const {
+    os << "circle (center = " << m_center 
+       << ", radius = " << m_radius 
+       << ", area=" << area() << ")";
+}
+
 //compares center and radius
 bool Circle::operator==(const Circle& other) const {
     return m_radius == other.m_radius && m_center == other.m_center;
@@ -34,8 +40,10 @@ bool Circle::operator==(const Circle& other) const {
 
 //output 
 std::ostream& operator<<(std::ostream& os, const Circle& c) {
-    os << "circle (center = " << c.m_center << ", radius = " << c.m_radius 
-       << ", area=" << c.area() << ")";
+    
+    os << c.m_center.getX() << " " 
+       << c.m_center.getY() << " " 
+       << c.m_radius;
     return os;
 }
 

@@ -28,6 +28,8 @@ public:
     
     //equality operator
     bool operator==(const Circle& other) const;
+
+    void printPretty(std::ostream& os) const;
     
     //output and input operators
     friend std::ostream& operator<<(std::ostream& os, const Circle& c);

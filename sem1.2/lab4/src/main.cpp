@@ -20,9 +20,13 @@ int main() {
     
         std::cout << "read " << circleList.size() << " circles from file.\n";
         std::cout << "original list:\n" << circleList << "\n";
+        circleList.display(std::cout);
+        std::cout << "\n";
     
         circleList.sortByArea();
         std::cout << "list sorted by area:\n" << circleList << "\n";
+        circleList.display(std::cout);
+        std::cout << "\n";
     
         //ask for output filename
         char filename[100];

@@ -12,7 +12,7 @@ private:
     Node Tail;
     std::size_t m_size;
     
-    void display(std::ostream& os) const;//output
+    
     void readFromStream(std::istream& is);//read from file
 
 public:
@@ -37,6 +37,8 @@ public:
     Circle back() const;
 
     void sortByArea();//sorting
+
+    void display(std::ostream& os) const;//output
 
     //friend operators
     friend std::ostream& operator<<(std::ostream& os, const List& list);

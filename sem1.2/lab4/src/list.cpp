@@ -1,4 +1,5 @@
 #include "list.hpp"
+#include "node.hpp"
 #include <utility>//for std::swap
 #include <fstream>
 
@@ -132,7 +133,7 @@ void List::sortByArea() {//bubble sort alm.
 void List::display(std::ostream& os) const {
     Node* current = Head.pNext;
     while (current != &Tail) {
-        os << current->m_data;
+        current->m_data.printPretty(os);
         if (current->pNext != &Tail) {
             os << std::endl;
         }
@@ -151,7 +152,14 @@ void List::readFromStream(std::istream& is) {
 
 //output operator for List
 std::ostream& operator<<(std::ostream& os, const List& list) {
-    list.display(os);
+    Node* current = list.Head.pNext;
+    while (current != &list.Tail) {
+        os << current->m_data; 
+        if (current->pNext != &list.Tail) {
+            os << std::endl;
+        }
+        current = current->pNext;
+    }
     return os;
 }
 
