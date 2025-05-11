@@ -1,45 +1,99 @@
 #include "workerdb.hpp"
 #include <iostream>
+using namespace std;
 
-//workerData implementation
-WorkerData::WorkerData() : age(0) {}
-WorkerData::WorkerData(const MyString& n, int a) : name(n), age(a) {}
 
-//iterator constructor
-WorkerDb::Iterator::Iterator(MapIter it) : iter(it) {}
+WorkerData::WorkerData(const MyString& n, int a) : name(n), age(a){}
 
-//iterator operations
-WorkerData& WorkerDb::Iterator::operator*() { 
-    return iter->second;
+WorkerDb::WorkerDb() : size(0), capacity(2) {
+    data = new Entry[capacity];
 }
 
-WorkerData* WorkerDb::Iterator::operator->() { 
-    return &iter->second;//value
+WorkerDb::~WorkerDb() {
+    delete[] data;
 }
 
-const MyString& WorkerDb::Iterator::key() const { 
-    return iter->first;//key
+void WorkerDb::ensure_capacity() {//ensures space for more workers
+    if (size >= capacity) {
+        capacity *= 2;
+        Entry* new_data = new Entry[capacity];
+        for (size_t i = 0; i < size; ++i)
+            new_data[i] = data[i];
+        delete[] data;
+        data = new_data;
+    }
+}
+
+WorkerData& WorkerDb::operator[](const MyString& surname) {// add or retrieves by surname
+    for (size_t i = 0; i < size; ++i) {
+        if (data[i].key == surname)
+            return data[i].value;
+    }
+
+    ensure_capacity();
+    data[size].key = surname;
+    data[size].value = WorkerData();
+    ++size;
+    return data[size - 1].value;
+}
+
+WorkerDb::Iterator WorkerDb::begin() {// retrun to  first ele
+    return Iterator(data);
+}
+
+WorkerDb::Iterator WorkerDb::end() {// past last ele
+    return Iterator(data + size);
+}
+
+WorkerDb::Iterator::Iterator(Entry* p) : ptr(p) {}
+
+WorkerData& WorkerDb::Iterator::operator*() {
+    return ptr->value;
+}
+
+WorkerData* WorkerDb::Iterator::operator->() {
+    return &ptr->value;
 }
 
 WorkerDb::Iterator& WorkerDb::Iterator::operator++() {
-    ++iter; 
+    ++ptr;
     return *this;
 }
 
-bool WorkerDb::Iterator::operator!=(const Iterator& other) const { 
-    return iter != other.iter; 
+WorkerDb::Iterator WorkerDb::Iterator::operator++(int) {
+    Iterator temp = *this;
+    ++ptr;
+    return temp;
 }
 
-
-WorkerData& WorkerDb::operator[](const MyString& surname) { 
-    return workers[surname];  
+bool WorkerDb::Iterator::operator==(const Iterator& other) const {
+    return ptr == other.ptr;
 }
 
-// begin/end iterators
-WorkerDb::Iterator WorkerDb::begin() { 
-    return Iterator(workers.begin());  
+bool WorkerDb::Iterator::operator!=(const Iterator& other) const {
+    return ptr != other.ptr;
 }
 
-WorkerDb::Iterator WorkerDb::end() { 
-    return Iterator(workers.end()); 
+MyString WorkerDb::Iterator::key() const {
+    return ptr->key;
+}
+
+void print_workers(WorkerDb& db) {
+    for (auto it = db.begin(); it != db.end(); ++it) {
+        cout << "Key: " << it.key().get_data()
+             << ", Name: " << it->name.get_data()
+             << ", Age: " << it->age << endl;
+    }
+}
+
+double get_average_age(WorkerDb& db) {
+    int total = 0;
+    int count = 0;
+
+    for (auto it = db.begin(); it != db.end(); ++it) {
+        total += it->age;
+        ++count;
+    }
+
+    return count == 0 ? 0.0 : static_cast<double>(total) / count;
 }

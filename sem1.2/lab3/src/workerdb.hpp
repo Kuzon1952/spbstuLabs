@@ -1,45 +1,56 @@
-#ifndef WORKER_DB_HPP
-#define WORKER_DB_HPP
-
+#pragma once
 #include "mystring.hpp"
-#include <map>
-#include <stdexcept> // for std::out_of_range
 
 struct WorkerData {
     MyString name;
-    int age;
+    int age = 0;
+    MyString position;
 
-    WorkerData();
-    WorkerData(const MyString& n, int a);
+    WorkerData() = default;
+   
+    WorkerData(const MyString& n, int a); 
 };
 
-class WorkerDb {
-    
+class WorkerDb {// dynamic database using a raw arr
 private:
-    std::map<MyString, WorkerData> workers;
+    struct Entry {
+        MyString key;
+        WorkerData value;
+    };
+
+    Entry* data = nullptr;
+    size_t size = 0;
+    size_t capacity = 0;
+
+    void ensure_capacity();//checking capacity
 
 public:
+    WorkerDb();
+    ~WorkerDb();
+
+    WorkerData& operator[](const MyString& surname);//by surname
+
     class Iterator {
-        using MapIter = std::map<MyString, WorkerData>::iterator;
-        MapIter iter;
+    private:
+        Entry* ptr;
     public:
-        Iterator(MapIter it);//constructor taking a map it
+        Iterator(Entry* p);
 
-        WorkerData& operator*();//get ref to worker data
-        WorkerData* operator->();//get ptr to worker data
+        WorkerData& operator*();
+        WorkerData* operator->();
 
-        const MyString& key() const;//current element
+        Iterator& operator++();
+        Iterator operator++(int);
 
-        Iterator& operator++();//prefix++
+        bool operator==(const Iterator& other) const;
         bool operator!=(const Iterator& other) const;
-    };
-    WorkerDb() = default; 
-    
-    WorkerData& operator[](const MyString& surname);
-    //const WorkerData& operator[](const MyString& surname) const;
 
-    Iterator begin();//get it to first elements
-    Iterator end();//to end marker
+        MyString key() const;
+    };
+
+    Iterator begin();
+    Iterator end();
 };
 
-#endif // WORKER_DB_HPP
+void print_workers(WorkerDb& db);
+double get_average_age(WorkerDb& db);
