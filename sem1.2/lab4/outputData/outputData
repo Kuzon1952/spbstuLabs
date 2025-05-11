@@ -1,4 +1,4 @@
-circle (center = (0, 0), radius = 1, area=3.14159)
-circle (center = (2, 2), radius = 1.5, area=7.06858)
-circle (center = (1, 1), radius = 2, area=12.5664)
-circle (center = (-1, -1), radius = 3, area=28.2743)
+0 0 1
+2 2 1.5
+1 1 2
+-1 -1 3
