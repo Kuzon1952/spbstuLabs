@@ -9,7 +9,7 @@ https://english.spbstu.ru/
 <br>
 Group: 5130201/40001,
 <br>
-Name: Ovi Md Shamin Yasir,
+Name of the Student: Ovi Md Shamin Yasir,
 <br>
 Course teacher portal: http://13633.mooo.com/, http://13633-oop.mooo.com/
 <br>
