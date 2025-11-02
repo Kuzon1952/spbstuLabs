@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmystrlen_static.a CMakeFiles/mystrlen_static.dir/strlen_iterative.c.o CMakeFiles/mystrlen_static.dir/strlen_recursive.c.o
+/usr/bin/ranlib libmystrlen_static.a

@@ -1,0 +1,3 @@
+/home/kuzon/task2_routes/build/CMakeFiles/task2_routes.dir
+/home/kuzon/task2_routes/build/CMakeFiles/edit_cache.dir
+/home/kuzon/task2_routes/build/CMakeFiles/rebuild_cache.dir

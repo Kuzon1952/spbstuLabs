@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/test_static.dir/test_static.c.o -o test_static  libmystrlen_static.a 

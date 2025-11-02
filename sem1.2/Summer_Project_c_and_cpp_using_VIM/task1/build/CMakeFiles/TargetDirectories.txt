@@ -1,0 +1,7 @@
+/home/kuzon/task1/build/CMakeFiles/mystrlen_static.dir
+/home/kuzon/task1/build/CMakeFiles/mystrlen_shared.dir
+/home/kuzon/task1/build/CMakeFiles/test_static.dir
+/home/kuzon/task1/build/CMakeFiles/test_dynamic.dir
+/home/kuzon/task1/build/CMakeFiles/test_dlopen.dir
+/home/kuzon/task1/build/CMakeFiles/edit_cache.dir
+/home/kuzon/task1/build/CMakeFiles/rebuild_cache.dir
