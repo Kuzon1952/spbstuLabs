@@ -3,8 +3,9 @@ https://english.spbstu.ru/
 <br>
 1ndSemester
 <br>
-2ndSemester (active)
+2ndSemester 
 <br>
+3rdSemester (Active)
 (02.03.01 Math&Cs)
 <br>
 Group: 5130201/40001,
