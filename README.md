@@ -11,8 +11,8 @@ Group: 5130201/40001,
 <br>
 Name of the Student: Ovi Md Shamin Yasir,
 <br>
-Course teacher portal: http://13633.mooo.com/, http://13633-oop.mooo.com/
+Course teacher portal: http://13633.mooo.com/, http://13633-oop.mooo.com/, http://23633.mooo.com/
 <br>
-Lab Course teacher: Vova Cennov,
+Lab Course teacher: Vladimir Sennov,
 <br>
-Lecture Course teacher: Glajunov Vadim Vladimirovich.
+Lecture Course teacher: Glazunov Vadim Vladimirovich.
